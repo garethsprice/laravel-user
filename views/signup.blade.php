@@ -1,4 +1,4 @@
-@layout('templates.login')
+@layout('user::templates.login')
 @section('title')
 Signup
 @endsection

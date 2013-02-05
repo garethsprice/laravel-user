@@ -1,4 +1,4 @@
-@layout('templates.main')
+@layout('user::templates.main')
 
 @section('title')
     {{ HTML::link( Config::get('user::config.admin_user_index_route'), 'Users' ) }}

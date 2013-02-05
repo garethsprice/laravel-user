@@ -1,4 +1,4 @@
-@layout('templates.main')
+@layout('user::templates.login')
 @section('return_link')
  {{ HTML::decode(HTML::link( Config::get('user::config.admin_user_index_route') , '<i class="icon-chevron-left"></i> Back to Users</a>')) }}
 @endsection

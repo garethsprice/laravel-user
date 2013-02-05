@@ -9,7 +9,7 @@ return array(
 	'logout_route' => 'logout',
 
 	// Login the user and redirect them to this route
-	'login_redirect' => 'admin/cities',
+	'login_redirect' => 'admin/users',
 	'logout_redirect' => '/',
 
 	'enable_login_remember' => TRUE,
