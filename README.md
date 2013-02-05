@@ -4,18 +4,18 @@ This bundle is a basic wrapper for the current Authentication system built in La
 
 Features:
 
-# Login/logout
-# Last login date and IP remembered
-# Remember me/cookie login
-# Secure password reset
-# Signup
-# Secure user activation
-# E-mail notifications on signup
-# Edit account settings page (password, etc)
-# Admin interface (create, read, update, delete, list)
-# Bootstrap-compatible views
-# Easy to override views without hacking the bundle
-# Full Unit and Functional tests with PHPUnit and Selenium
+* Login/logout
+* Last login date and IP remembered
+* Remember me/cookie login
+* Secure password reset
+* Signup
+* Secure user activation
+* E-mail notifications on signup
+* Edit account settings page (password, etc)
+* Admin interface (create, read, update, delete, list)
+* Bootstrap-compatible views
+* Easy to override views without hacking the bundle
+* ~~Full~~ Some Unit and Functional tests with PHPUnit and Selenium
 
 It is very easy to use and customize. Most of the above features can be toggled via a configuration file - got a simple app that just needs login? Disable all the cruft. Need a full featured authentication system for a public facing web application? Enable all the things!
 
@@ -28,7 +28,13 @@ Note that this module does/should not provide Authorization (roles, permissons, 
 To install the bundle, run the following command
 
 ```PHP
-php artisan bundle:install user
+~~php artisan bundle:install user~~
+```
+
+Not yet! This is a work in progress, so for now:
+
+```PHP
+git clone https://github.com/garethsprice/laravel-user.git
 ```
 
 Next, we will tell the application to auto load the bundle. In your application/bundles.php file add the following line to the array
