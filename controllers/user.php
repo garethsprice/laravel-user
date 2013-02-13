@@ -25,11 +25,11 @@ class User_User_Controller extends Base_Controller
             if( Auth::user()->status == USER_PENDING ) {
                 Auth::logout();
                 // @todo: Add resend activation e-mail method
-                return Redirect::to( Config::get('user::config.login_route') )
+                return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
                     ->with('error', 'You must activate your account to log in. Check your e-mail inbox for activation details.');                
             } elseif( Auth::user()->status == USER_SUSPENDED ) {
                 Auth::logout();
-                return Redirect::to( Config::get('user::config.login_route') )
+                return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
                     ->with('error', 'Your account has been suspended. Please contact the site administrator for support.');                 
             }
 
@@ -39,9 +39,9 @@ class User_User_Controller extends Base_Controller
 
             Event::fire('user: login');
 
-            return Redirect::to( Config::get('user::config.login_redirect') );
+            return Redirect::to( Config::get('user.login_redirect', Config::get('user::config.login_redirect')) );
         } else {
-            return Redirect::to( Config::get('user::config.login_route') )
+            return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
                 ->with('error', 'E-mail or password incorrect');
         }
     }
@@ -61,14 +61,14 @@ class User_User_Controller extends Base_Controller
         $new_user['password'] = Input::get('password');
         $new_user['last_login_ip'] = Request::ip();
 
-        if(Config::get('user::config.signup_activation_required')) {
+        if(Config::get('user.signup_activation_required', Config::get('user::config.signup_activation_required'))) {
             $new_user['status'] = USER_PENDING;
         }
 
         $v = Validator::make( Input::all(), static::$rules );
 
         if ($v->fails()) {
-            return Redirect::to( Config::get('user::config.signup_route') )
+            return Redirect::to( Config::get('user.signup_route', Config::get('user::config.signup_route')) )
                 ->with_errors($v)
                 ->with_input();
         }
@@ -90,7 +90,7 @@ class User_User_Controller extends Base_Controller
             mail(Config::get('application.site_admin'), $subject, $body);
         }
 
-        if(Config::get('user::config.signup_activation_required')) {
+        if(Config::get('user.signup_activation_required', Config::get('user::config.signup_activation_required'))) {
             $view = View::exists('user.email.signup_activation_required') ? 'user.email.signup_activation_required' : 'user::email.signup_activation_required';
             $body = View::make( $view )
                         ->with('user', $user)
@@ -100,19 +100,19 @@ class User_User_Controller extends Base_Controller
             $subject = 'Please activate your account at ' . $site_name;
             mail($user->email, $subject, $body);
 
-            return Redirect::to( Config::get('user::config.login_route') )
+            return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
                 ->with('success', 'Please check your e-mail for an activation link to enable your account');
         } else {
             $view = View::exists('user.email.signup_welcome') ? 'user.email.signup_welcome' : 'user::email.signup_welcome';
             $body = View::make( $view )
                         ->with('user', $user)
                         ->with('site_name', $site_name)
-                        ->with('reset_url', Config::get('user::config.reset_route'))
+                        ->with('reset_url', Config::get('user.reset_route', Config::get('user::config.reset_route')))
                         ->render();   
             $subject = 'Welcome to ' . $site_name;
             mail($user->email, $subject, $body);
 
-            return Redirect::to( Config::get('user::config.login_route') )
+            return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
                 ->with('success', 'Account created, you can now log in below');
         }
     }
@@ -132,7 +132,7 @@ class User_User_Controller extends Base_Controller
 
         $v = Validator::make( Input::all(), $rules );
         if ($v->fails()) {
-            return Redirect::to( Config::get('user::config.account_route') )
+            return Redirect::to( Config::get('user.account_route', Config::get('user::config.account_route')) )
                 ->with_errors($v)
                 ->with_input();
         }
@@ -149,7 +149,7 @@ class User_User_Controller extends Base_Controller
 
         Event::fire('user: account updated');
 
-        return Redirect::to( Config::get('user::config.account_route') )
+        return Redirect::to( Config::get('user.account_route', Config::get('user::config.account_route')) )
             ->with('success', 'Account changes saved');
     }
 
@@ -166,15 +166,15 @@ class User_User_Controller extends Base_Controller
 
         $v = Validator::make( Input::all(), $rules );
         if ($v->fails()) {
-            return Redirect::to( Config::get('user::config.reset_route') )
+            return Redirect::to( Config::get('user.reset_route', Config::get('user::config.reset_route')) )
                 ->with_errors($v)
                 ->with_input();
         }
 
         $user = User::where_email(Input::get('email'))->first();
 
-        if(!$user && !Config::get('user::config.enable_reset_obfuscation')) {
-            return Redirect::to( Config::get('user::config.reset_route') )
+        if(!$user && !Config::get('user.enable_reset_obfuscation', Config::get('user::config.enable_reset_obfuscation'))) {
+            return Redirect::to( Config::get('user.reset_route', Config::get('user::config.reset_route')) )
                 ->with('error', 'No account is registered with this e-mail address.');            
         } elseif($user) {
             $url = $user->get_pass_reset_url();
@@ -189,7 +189,7 @@ class User_User_Controller extends Base_Controller
 
         Event::fire('user: password reset request');
 
-        return Redirect::to( Config::get('user::config.reset_route') )
+        return Redirect::to( Config::get('user.reset_route', Config::get('user::config.reset_route')) )
             ->with('success', 'Check your e-mail for link to reset your password');       
     }
 
@@ -234,7 +234,7 @@ class User_User_Controller extends Base_Controller
 
         $v = Validator::make( Input::all(), $rules );
         if ($v->fails()) {
-            return Redirect::to( implode('/', array( Config::get('user::config.reset_route'), $id, $timestamp, $hash )) )
+            return Redirect::to( implode('/', array( Config::get('user.reset_route', Config::get('user::config.reset_route')), $id, $timestamp, $hash )) )
                 ->with_errors($v)
                 ->with_input();
         }
@@ -245,7 +245,7 @@ class User_User_Controller extends Base_Controller
 
         Event::fire('user: password reset');
 
-        return Redirect::to( Config::get('user::config.login_route') )
+        return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
             ->with('success', 'Password reset, you can now log in with your new password');        
     }
 
@@ -266,7 +266,7 @@ class User_User_Controller extends Base_Controller
 
         $v = Validator::make( array('id' => $id, 'timestamp' => $timestamp, 'hash' => $hash), $rules, $messages );
         if ($v->fails()) {
-            return Redirect::to( Config::get('user::config.login_route') )
+            return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
                 ->with('error', $v->errors->first())
                 ->with_input();
         }
@@ -277,7 +277,7 @@ class User_User_Controller extends Base_Controller
 
         Event::fire('user: activated');
 
-        return Redirect::to( Config::get('user::config.login_route') )
+        return Redirect::to( Config::get('user.login_route', Config::get('user::config.login_route')) )
             ->with('success', 'Account activated, you can now log in with your password');        
     }
 
@@ -287,6 +287,6 @@ class User_User_Controller extends Base_Controller
 
         Event::fire('user: logout');
         
-        return Redirect::to( Config::get('user::config.logout_redirect') );
+        return Redirect::to( Config::get('user.logout_redirect', Config::get('user::config.logout_redirect')) );
     }
 }
