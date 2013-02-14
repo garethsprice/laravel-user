@@ -13,13 +13,13 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
  
     public function testLogoutRedirectsToLoginWhenAnonymous()
     {
-    	$this->url( URL::to( Config::get('user::config.logout_route') ) );
-    	$this->assertEquals( URL::to( Config::get('user::config.login_route') ), $this->url() );
+    	$this->url( URL::to( Config::get('user.logout_route', Config::get('user::config.logout_route')) ) );
+    	$this->assertEquals( URL::to( Config::get('user.login_route', Config::get('user::config.login_route')) ), $this->url() );
     }
 
     public function testLogin()
     {
-        $this->url( URL::to( Config::get('user::config.login_route') ) );
+        $this->url( URL::to( Config::get('user.login_route', Config::get('user::config.login_route')) ) );
      
         // Create a user
         $user = new User;
@@ -70,16 +70,16 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
         $this->clickOnElement('login');
 
         // Check that we're no longer on the login page
-        $this->assertEquals( URL::to( Config::get('user::config.login_redirect') ), $this->url() );
+        $this->assertEquals( URL::to( Config::get('user.login_redirect', Config::get('user::config.login_redirect')) ), $this->url() );
 
         // Log out again (check by visiting the logout route and checking we get redirected)
         // (Not checking for logout_redirect as this can also lead to a redirect)
-        $this->url( URL::to( Config::get('user::config.logout_route') ) );
-        $this->assertNotEquals( URL::to( Config::get('user::config.logout_route') ), $this->url() );
+        $this->url( URL::to( Config::get('user.logout_route', Config::get('user::config.logout_route')) ) );
+        $this->assertNotEquals( URL::to( Config::get('user.logout_route', Config::get('user::config.logout_route')) ), $this->url() );
 
         // Verify we're no longer authenticated
-        $this->url( URL::to( Config::get('user::config.logout_route') ) );
-        $this->assertEquals( URL::to( Config::get('user::config.login_route') ), $this->url() );
+        $this->url( URL::to( Config::get('user.logout_route', Config::get('user::config.logout_route')) ) );
+        $this->assertEquals( URL::to( Config::get('user.login_route', Config::get('user::config.login_route')) ), $this->url() );
 
         // Verify that login was logged
         // Refresh user from database
@@ -101,7 +101,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 		$user->save();	
 
 		// Now try to log in as the blocked user
-		$this->url( URL::to( Config::get('user::config.login_route') ) );
+		$this->url( URL::to( Config::get('user.login_route', Config::get('user::config.login_route')) ) );
 
         $username = $this->byName('username');
         $username->clear();
@@ -128,7 +128,7 @@ class LoginTest extends PHPUnit_Extensions_Selenium2TestCase
 		$user->save();	
 
 		// Now try to log in as the blocked user
-		$this->url( URL::to( Config::get('user::config.login_route') ) );
+		$this->url( URL::to( Config::get('user.login_route', Config::get('user::config.login_route')) ) );
 
         $username = $this->byName('username');
         $username->clear();

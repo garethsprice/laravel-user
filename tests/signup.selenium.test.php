@@ -8,7 +8,7 @@ class SignupTest extends PHPUnit_Extensions_Selenium2TestCase
     protected function setUp()
     {
         // @todo: Find a way to test enable/disable options
-        if( !Config::get('user::config.enable_signup') ) {
+        if( !Config::get('user.enable_signup', Config::get('user::config.enable_signup')) ) {
             $this->markTestSkipped('User signup is not enabled in the configuration.');
         }
 
@@ -18,11 +18,11 @@ class SignupTest extends PHPUnit_Extensions_Selenium2TestCase
 
     public function testSignupFormValidation()
     {
-        $this->url( URL::to( Config::get('user::config.signup_route') ) );
-        $this->assertEquals( URL::to( Config::get('user::config.signup_route') ), $this->url() );
+        $this->url( URL::to( Config::get('user.signup_route', Config::get('user::config.signup_route')) ) );
+        $this->assertEquals( URL::to( Config::get('user.signup_route', Config::get('user::config.signup_route')) ), $this->url() );
 
         $loginExisting = $this->byId('login_existing');
-        $this->assertEquals( URL::to( Config::get('user::config.login_route') ), $loginExisting->attribute('href') );
+        $this->assertEquals( URL::to( Config::get('user.login_route', Config::get('user::config.login_route')) ), $loginExisting->attribute('href') );
 
         // Test basic form fields load
         $username = $this->byName('username');
@@ -88,7 +88,7 @@ class SignupTest extends PHPUnit_Extensions_Selenium2TestCase
 
     public function testSignupCreatesUser()
     {
-        $this->url( URL::to( Config::get('user::config.signup_route') ) );
+        $this->url( URL::to( Config::get('user.signup_route', Config::get('user::config.signup_route')) ) );
 
         // Reload form elements as page has reloaded
         $username = $this->byName('username');
@@ -105,7 +105,7 @@ class SignupTest extends PHPUnit_Extensions_Selenium2TestCase
 
         $this->clickOnElement('signup');
 
-        $this->assertEquals( URL::to( Config::get('user::config.login_route') ), $this->url() );
+        $this->assertEquals( URL::to( Config::get('user.login_route', Config::get('user::config.login_route')) ), $this->url() );
 
         $alert = $this->byCssSelector('.alert-success');
         $this->assertRegExp('/Account created|activation link/', $alert->text());
@@ -126,7 +126,7 @@ class SignupTest extends PHPUnit_Extensions_Selenium2TestCase
         $user->status = 1;
         $user->save();  
    
-        $this->url( URL::to( Config::get('user::config.signup_route') ) );
+        $this->url( URL::to( Config::get('user.signup_route', Config::get('user::config.signup_route')) ) );
 
         // Reload form elements as page has reloaded
         $username = $this->byName('username');
