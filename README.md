@@ -1,6 +1,6 @@
-User - A Laravel Authentication Bundle
+User - A Laravel 3 Authentication Bundle
 
-This bundle is a basic wrapper for the current Authentication system built in Laravel. It is designed to drop-in and instantly add everything required for user authentication and management in a basic web application, so you don't have to write it.
+This bundle is a basic wrapper for the current Authentication system built in Laravel 3. It is designed to drop-in and instantly add everything required for user authentication and management in a basic web application, so you don't have to write it.
 
 Features:
 
